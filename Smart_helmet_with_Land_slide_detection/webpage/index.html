@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="app.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: blanchedalmond;
+        }
+
+        .container1 {
+            width: 400px;
+            height: 300px;
+            margin-left: 450px;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 10px;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        button:hover {
+            opacity: 0.3;
+        }
+
+        .container2 {
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px 0 #04AA6D;
+        }
+
+        p {
+            margin: 0px;
+            padding: 0px;
+            font-weight: bolder;
+        }
+
+        .head {
+            text-align: center;
+            font-size: 50px;
+            color: #04AA6D;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="head" id="head">Welcome</h1>
+    <div class="container1">
+        <div class="container2">
+            <p class="name" id="name">Username</p>
+            <input type="text" class="getname" placeholder="Enter Username" id="getname">
+            <p class="pass" id="pass">password</p>
+            <input type="password" class="password" placeholder="Enter password" id="password">
+            <div class="login" id="login">
+                <button class="logbut" id="logbut" onclick="userlogin()"">Login</button>
+            </div>
+            <!-- <p class=" or" id="or"></p>
+                    <div class="register" id="register">
+                        <button class="reg" id="reg" onclick="register()">register</button>
+                    </div> -->
+            </div>
+        </div>
+
+</body>
+
+
+</html>

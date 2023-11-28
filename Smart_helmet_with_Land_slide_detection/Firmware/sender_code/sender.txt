@@ -1,0 +1,10 @@
+Sender device will sense the CO,Humidity level , Temperature and Air quality from the respected sensors .
+It will send the data to the reciver via using LoRaWAN protocol.
+
+processor - ESP32 WDROOM
+DHT 11 - humidity and temperature
+MQ135 - Airquality
+MQ-9 - CO level 
+
+Sender recives land slide alert from Landslide alerting device which is mounted in wall of the mining ground.
+for receving data it uses ESP-NOW protocol , which is ESP to ESP data sharing protocol 

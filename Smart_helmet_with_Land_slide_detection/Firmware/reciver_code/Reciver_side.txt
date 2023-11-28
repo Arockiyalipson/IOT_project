@@ -1,0 +1,1 @@
+Reciver side constains a reciver lora device which gets data from sender , then it pushes data to firebase RTDB via HTTP protocol ..

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart-helmet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- leaflet map API script  -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        body {
+            background-color: blanchedalmond;
+
+        }
+
+        .topic {
+            color: black;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bolder;
+            font-size: 75px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        /* text properties */
+        .t,
+        .h,
+        .m,
+        .lat,
+        .long {
+            font-size: 50px;
+            text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+        }
+
+        /* value properties */
+        .temp,
+        .hum,
+        .mq_9,
+        .latitude,
+        .longitude {
+            font-family: Arial, Helvetica, sans-serif;
+            text-decoration: none;
+            font-size: 30px;
+            font-weight: bolder;
+        }
+
+        .mq_135 {
+            font-size: 50px;
+            font-weight: bolder;
+            font-family: 'Courier New', Courier, monospace;
+            text-decoration: none;
+        }
+
+        /* container color  */
+        .cont1,
+        .cont2,
+        .cont3,
+        .cont4,
+        .cont5,
+        .cont6 {
+            border-style: solid;
+            border-color: black;
+            text-align: center;
+            border-radius: 20%;
+            width: 30%;
+            height: 50%;
+            margin: 20px;
+            box-sizing: border-box;
+            box-shadow: 10px 10px 5px black;
+        }
+
+        .temp,
+        .hum,
+        .mq_9,
+        .latitude,
+        .longitude {
+            font-family: Arial, Helvetica, sans-serif;
+            text-decoration: none;
+            font-size: 30px;
+            font-weight: bolder;
+        }
+
+        .mq_135 {
+            font-size: 40px;
+            font-weight: bolder;
+            font-family: 'Courier New', Courier, monospace;
+            text-decoration: none;
+            margin: none;
+        }
+
+        .map {
+            border-style: none;
+            border-radius: 5%;
+            width: 1250px;
+            height: 600px;
+        }
+
+        .first {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .second {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .emergency {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .em {
+            border-style: solid;
+            border-color: black;
+            text-align: center;
+            border-radius: 20%;
+            width: 97%;
+            height: 100%;
+            margin: 20px;
+            box-sizing: border-box;
+            box-shadow: 10px 10px 5px black;
+        }
+
+        .alert {
+            text-align: center;
+            font-size: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bolder;
+        }
+    </style>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDyzHITWPRMkjf8jcBg9XnLZ7aDzBfPdYw",
+            authDomain: "mini-project-c1b66.firebaseapp.com",
+            projectId: "mini-project-c1b66",
+            storageBucket: "mini-project-c1b66.appspot.com",
+            messagingSenderId: "1028055879480",
+            appId: "1:1028055879480:web:6594847a24d87751e3bbcd"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var database = firebase.database();
+
+
+        //getting reference to the data we want
+        var dataRef1 = database.ref('data/temp');
+        var dataRef2 = database.ref('data/hum');
+        var dataRef3 = database.ref('data/mq_9');
+        var dataRef4 = database.ref('data/latitude');
+        var dataRef5 = database.ref('data/longitude');
+        var dataRef6 = database.ref("data/earth");
+        var dataRef7 = database.ref("data/emergency");
+        var dataRef8 = database.ref("data/mq_135");
+        let latitude = 0;
+        let longitude = 0;
+        let mq_9 = 0;
+        let mq_135 = 0;
+        let map = L.map('map');
+        var getout = document.getElementById('alert');
+        var blink_speed = 500; // blink for every 0.5 second
+        let isBlinking = false;
+        let blinkInterval;
+
+        function blinkText() {
+            getout.style.visibility = (getout.style.visibility === 'hidden') ? '' : 'hidden';
+        }
+
+        function startBlinking() {
+            blinkInterval = setInterval(blinkText, 500); // Change the interval (in milliseconds) for the blinking speed
+            isBlinking = true;
+        }
+
+        function stopBlinking() {
+            clearInterval(blinkInterval);
+            isBlinking = false;
+        }
+        //fetch the data
+        dataRef1.on('value', function (getdata1) {
+            var temp = getdata1.val();
+            document.getElementById('temp').innerHTML = temp + "&#8451";
+        })
+
+        dataRef2.on('value', function (getdata2) {
+            var humi = getdata2.val();
+            document.getElementById('hum').innerHTML = humi + "%";
+        })
+        dataRef3.on('value', function (getdata3) {
+            mq_9 = getdata3.val();
+            // drawChart();
+            document.getElementById('mq_9').innerHTML = mq_9 + "ppm";
+        })
+        dataRef4.on('value', function (getdata4) {
+            latitude = (getdata4.val());
+            updatemap();
+            document.getElementById('latitude').innerHTML = latitude;
+        })
+        dataRef5.on('value', function (getdata5) {
+            longitude = getdata5.val();
+            updatemap();
+            document.getElementById('longitude').innerHTML = longitude;
+        })
+        dataRef6.on('value', function (getdata6) {
+            var earthquake = (getdata6.val());
+
+            if (earthquake == 1) {
+                getout.textContent = "Land Slide!!!!!!!!!!";
+                getout.style.color = 'red';
+                startBlinking();
+            }
+            else {
+                getout.textContent = "Good to GO";
+                getout.style.color = 'green';
+                stopBlinking();
+            }
+        })
+        dataRef7.on('value', function (getdata7) {
+            var emergency_button = (getdata7.val());
+            if (emergency_button == 1) {
+                getout.textContent = "EMERGENCY !!!!!!!!!!";
+                getout.style.color = 'red';
+                startBlinking();
+            }
+            else {
+                getout.textContent = "Good to GO";
+                getout.style.color = 'green';
+                stopBlinking();
+            }
+        })
+        dataRef8.on('value', function (getdata8) {
+            mq_135 = (getdata8.val());
+            var changetxt = document.getElementById('mq_135');
+            if (mq_135 <= 150) {
+                changetxt.textContent = "Good";
+                changetxt.style.color = 'green';
+            }
+            else if ((mq_135 > 150) && (mq_135 <= 500)) {
+                changetxt.textContent = "Normal";
+                changetxt.style.color = 'yellow';
+            }
+            else if (mq_135 >= 600) {
+                changetxt.textContent = "Bad!!";
+                changetxt.style.color = 'red';
+            }
+        })
+        // longitude = 10.727198
+        // longitude = 79.01913
+        var updatemap = () => {
+            map.setView([latitude, longitude], 10);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            if ((latitude && longitude) != 0) {
+                L.marker([latitude, longitude]).addTo(map)
+                    // .bindPopup('your location')
+                    .openPopup();
+            }
+            else {
+                // alert("no longitude and longitude found !!!!");
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="head">
+        <div class="header" id="header">
+            <h1 class="topic">Smart-Helmet</h1>
+        </div>
+    </div>
+    <div class="btnlog" id="btnlog"><a href="index.html" class="logout" id="logout">Logout</a></div>
+    <div class="emegency">
+        <div class="em">
+            <p class="alert" id="alert">Good to Go</p>
+        </div>
+    </div>
+    <div class="first">
+        <div class="cont1">
+            <h1 class="t">Temperature </h1>
+            <p class="temp" id="temp">0</p>
+        </div>
+
+        <div class="cont2">
+            <h1 class="h">Humidity</h1>
+            <p class="hum" id="hum">0</p>
+        </div>
+
+        <div class="cont3">
+            <h1 class="m">CO level</h1>
+            <p class="mq_9" id="mq_9">0</p>
+        </div>
+    </div>
+    <div class="second">
+        <div class="cont4">
+            <h1 class="m">Air-quality</h1>
+            <p class="mq_135" id="mq_135"></p>
+        </div>
+        <div class="cont5">
+            <h1 class="lat">latitude</h1>
+            <p class="latitude" id="latitude">0.000</p>
+        </div>
+        <div class="cont6">
+            <h1 class="long">longitude</h1>
+            <p class="longitude" id="longitude">0.000</p>
+        </div>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="my">
+        <p class="name">@ done by us</p>
+    </div>
+
+
+</body>
+
+
+</html>
