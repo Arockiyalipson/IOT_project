@@ -1,3 +1,4 @@
 # IOT_project
 
-#This repo is full of my IOT projects .
+I post my IOT projects here . 
+Which will be innovative and intresting to know about ...
